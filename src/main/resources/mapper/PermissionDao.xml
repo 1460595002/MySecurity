@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jinronga.dao.PermissionDao">
+    <resultMap type="cn.jinronga.entity.Permission" id="PermissionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="permissionName" column="permission_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PermissionMap">
+
+
+
+
+
+
+
+
+                                                                        select
+                                                                          id,permission_name
+                                                                        from mysecurity.permission
+                                                                        where id = #{id}
+
+
+
+
+
+
+
+
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PermissionMap">
+
+
+
+
+
+
+
+
+                                                                        select
+                                                                          id,permission_name
+                                                                        from mysecurity.permission
+                                                                        limit #{offset}, #{limit}
+
+
+
+
+
+
+
+
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="PermissionMap">
+        select
+        id,permission_name
+        from mysecurity.permission
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="permission
+Name != null and permission
+Name != ''">
+                and permission_name = #{permissionName}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+
+
+
+
+
+
+
+
+                                                                        insert into mysecurity.permission(permission_name)
+                                                                        values (#{permissionName})
+
+
+
+
+
+
+
+
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into mysecurity.permission(permission_name)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.permissionName})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into mysecurity.permission(permission_name)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.permission
+Name})
+        </foreach>
+        on duplicate key update
+        permission_name = values(permission_name)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update mysecurity.permission
+        <set>
+            <if test="permission
+Name != null and permission
+Name != ''">
+                permission_name = #{permissionName},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+
+
+
+
+
+
+
+
+                                                                        delete from mysecurity.permission where id = #{id}
+
+
+
+
+
+
+
+
+    </delete>
+
+    <select id="getPermissionByUserName" resultMap="PermissionMap">
+
+
+
+
+                         SELECT p.id id,p.`permission_name` permission_name  FROM t_user u
+                          inner  join user_role ur on u.id=ur.u_id
+                       INNER  JOIN t_role r on ur.r_id=r_id
+                          INNER   JOIN role_permission rp on rp.r_id=r.id
+                           INNER   JOIN permission p on rp.p_id=p.id WHERE u.username=#{username}
+
+
+
+
+    </select>
+
+
+<!--    <insert id="allocation" keyProperty="id" useGeneratedKeys="true">-->
+<!--                        insert into role_permission-->
+<!--                        values (#{rId},#{pId})-->
+<!--    </insert>-->
+</mapper>
+

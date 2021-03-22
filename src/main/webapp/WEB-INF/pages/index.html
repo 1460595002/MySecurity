@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+</head>
+<body>
+<a th:href="@{/toLogin}" th:if='${#session.getAttribute("user")eq null}'>登录</a>
+<a th:href="@{/toAddUser}" th:if='${#session.getAttribute("permissions") ne null} && #lists.contains(#session.getAttribute("permissions"),"user:add")}'>添加用户</a>
+<a th:href="@{/toAddUser}" th:if='${#session.getAttribute("permissions") ne null && #lists.contains(#session.getAttribute("permissions"),"user:delete")}'>删除用户</a>
+<a th:href="@{/toAddUser}" th:if='${#session.getAttribute("permissions") ne null && #lists.contains(#session.getAttribute("permissions"),"user:query")}'>查询用户</a>
+<a th:href="@{/toAddUser}" th:if='${#session.getAttribute("permissions") ne null && #lists.contains(#session.getAttribute("permissions"),"user:update")}'>修改用户</a>
+</body>
+</html>

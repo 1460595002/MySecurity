@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 加载外部的数据库信息 classpath:不叫会报错具体原因下边解释-->
+    <context:property-placeholder location="classpath:db.properties"/>
+    <!-- 加入springmvc的配置 -->
+    <import resource="classpath:springmvc-servlet.xml"/>
+
+    <context:component-scan base-package="cn.jinronga"/>
+
+    <!-- Mapper 扫描器 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 扫描 cn.wmyskxz.mapper 包下的组件 -->
+        <property name="basePackage" value="cn.jinronga.dao"/>
+    </bean>
+
+    <!--配置数据源：数据源有非常多，可以使用第三方的，也可使使用Spring的-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <property name = "filters" value = "${filters}" />
+        <!-- 最大并发连接数 -->
+        <property name = "maxActive" value = "${maxActive}" />
+        <!-- 初始化连接数量 -->
+        <property name = "initialSize" value = "${initialSize}" />
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name = "maxWait" value = "${maxWait}" />
+        <!-- 最小空闲连接数 -->
+        <property name = "minIdle" value = "${minIdle}" />
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name = "timeBetweenEvictionRunsMillis" value ="${timeBetweenEvictionRunsMillis}" />
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name = "minEvictableIdleTimeMillis" value ="${minEvictableIdleTimeMillis}" />
+        <!--        <property name = "validationQuery" value = "${validationQuery}" />     -->
+        <property name = "testWhileIdle" value = "${testWhileIdle}" />
+        <property name = "testOnBorrow" value = "${testOnBorrow}" />
+        <property name = "testOnReturn" value = "${testOnReturn}" />
+        <property name = "maxOpenPreparedStatements" value ="${maxOpenPreparedStatements}" />
+        <!-- 打开 removeAbandoned 功能 -->
+        <property name = "removeAbandoned" value = "${removeAbandoned}" />
+        <!-- 1800 秒，也就是 30 分钟 -->
+        <property name = "removeAbandonedTimeout" value ="${removeAbandonedTimeout}" />
+        <!-- 关闭 abanded 连接时输出错误日志 -->
+        <property name = "logAbandoned" value = "${logAbandoned}" />
+    </bean>
+
+    <!--配置SqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--关联Mybatis-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <!--使用下面的方式配置参数，一行配置一个 -->
+                        <value>
+                            helperDialect=mysql
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+<!--    &lt;!&ndash;注册sqlSessionTemplate , 关联sqlSessionFactory&ndash;&gt;-->
+<!--    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">-->
+<!--        &lt;!&ndash;利用构造器注入&ndash;&gt;-->
+<!--        <constructor-arg index="0" ref="sqlSessionFactory"/>-->
+<!--    </bean>-->
+
+
+    <aop:aspectj-autoproxy/>
+
+    <!--事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!--配置事务通知-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--配置哪些方法使用什么样的事务,配置事务的传播特性-->
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="search*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--配置aop织入事务-->
+    <aop:config>
+        <aop:pointcut id="txPointcut" expression="execution(* cn.jinronga.service.impl.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config>
+
+</beans>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <!--    base编写相对路径-->
+    <base th:href="@{/}">
+</head>
+<body>
+<form>
+    <input name="username"/>
+    <input type="password" name="password"/>
+    <input id="btn" type="button" value="提交"/>
+</form>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $("#btn").click(function () {
+        $.post("/login", $("form").serialize(), function (data) {
+            if (data.code===200){
+                location.href="/"
+            }
+            console.log("data:", data)
+        })
+    })
+</script>
+</body>
+</html>
