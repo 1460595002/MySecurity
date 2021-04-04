@@ -1,6 +1,8 @@
 package cn.jinronga.core;
 
 
+import org.springframework.util.StringUtils;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,8 +22,7 @@ public class LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         String ignore = filterConfig.getInitParameter("ignore");
-        splitUrl = ignore.split(",");
-
+            splitUrl = ignore.split(",");
     }
 
     @Override

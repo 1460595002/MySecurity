@@ -43,8 +43,8 @@
         <filter-name>loginFilter</filter-name>
         <filter-class>cn.jinronga.core.LoginFilter</filter-class>
         <init-param>
-            <param-name>exclude</param-name>
-            <param-value>/,/index</param-value>
+            <param-name>ignore</param-name>
+            <param-value>/,/index,/toLogin,/login</param-value>
         </init-param>
     </filter>
     <filter-mapping>

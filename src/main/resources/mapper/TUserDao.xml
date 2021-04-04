@@ -108,13 +108,13 @@
 
     </delete>
 
-<!--    <select id="getUsersByRoleId" resultMap="TUserMap">-->
+    <select id="getUsersByRoleId" resultMap="TUserMap">
 
-<!--                  SELECT u.id ,u.username, u.password password-->
-<!--                                                FROM t_user u inner  join user_role ur on-->
-<!--                                                u.id=ur.u_id-->
-<!--                                                 WHERE ur.r_id=#{rId}-->
+                  SELECT u.id ,u.username, u.password password
+                                                FROM t_user u inner  join user_role ur on
+                                                u.id=ur.u_id
+                                                 WHERE ur.r_id=#{rId}
 
-<!--    </select>-->
+    </select>
 </mapper>
 

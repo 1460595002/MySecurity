@@ -163,9 +163,9 @@ Name != ''">
     </select>
 
 
-<!--    <insert id="allocation" keyProperty="id" useGeneratedKeys="true">-->
-<!--                        insert into role_permission-->
-<!--                        values (#{rId},#{pId})-->
-<!--    </insert>-->
+    <insert id="allocation" keyProperty="id" useGeneratedKeys="true">
+                        insert into role_permission
+                        values (#{rId},#{pId})
+    </insert>
 </mapper>
 
